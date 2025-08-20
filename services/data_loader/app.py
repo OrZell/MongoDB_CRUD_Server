@@ -12,27 +12,29 @@ def get_data():
     data = dal.get_data()
     return data
 
-@app.post('/post')
+@app.get('/post')
 def post_data(ID=None, first_name=None, last_name=None, phone_number=None, rank=None):
     if None in [ID, first_name, last_name, phone_number, rank]:
         return 'please enter whole data'
     return dal.post_data(ID, first_name, last_name, phone_number, rank)
 
 @app.put('/put')
-def put_data_by_id(ID=None):
+def put_data_by_id(ID=None, first_name=None, last_name=None, phone_number=None, rank=None):
     if ID == None:
         return 'Please Insert ID'
-    return dal.put_data_by_id(ID)
-
-@app.get('/close')
-def close():
-    return dal.close_connection()
+    delete_data(ID)
+    post_data(ID, first_name, last_name, phone_number, rank)
+    return 'updated'
 
 @app.delete('/delete')
 def delete_data(ID=None):
     if ID == None:
         return 'Please Insert ID'
-    return dal.delete_data(ID)
+    return dal.delete_data_by_id(ID)
+
+@app.get('/close')
+def close():
+    return dal.close_connection()
 
 if __name__ == '__main__':
     uvicorn.run(app, host='localhost', port=8000)

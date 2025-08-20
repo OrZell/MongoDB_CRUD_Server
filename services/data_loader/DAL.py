@@ -25,8 +25,8 @@ class DAL:
 
     def post_data(self, ID, first_name, last_name, phone_number, rank):
         connection = self.connection
-        soldier = Soldier(ID=ID, first_name=first_name, last_name=last_name, phone_number=phone_number, rank=rank)
-        connection[self.db][self.collection].insert_one(soldier)
+        soldier = Soldier(ID, first_name, last_name, phone_number, rank)
+        connection[self.db][self.collection].insert_one(soldier.__dict__)
         return 'posted'
 
     def put_data_by_id(self, ID):
@@ -35,10 +35,13 @@ class DAL:
         if soldier:
             return soldier
 
-    def delete_data(self, ID):
+    def delete_data_by_id(self, ID):
         connection = self.connection
-        connection[self.db][self.collection].deleteOne({'ID': ID})
-        return 'deleted'
+        soldier = connection[self.db][self.collection].find_One({'ID': ID})
+        if soldier:
+            connection[self.db][self.collection].deleteOne({'ID': ID})
+            return 'deleted'
+        return 'No such id'
 
     def close_connection(self):
         if self.connection is not None:
